@@ -1,0 +1,30 @@
+import pandas as pd
+
+
+filename = 'PayPal - Duplicated Coupon Chk (1)'
+
+
+
+# Load the CSV file into a DataFrame
+file_path = fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Insert\{filename}.csv'  # Update this with the path to your CSV file
+df = pd.read_csv(file_path)
+
+# Display the DataFrame to ensure it's loaded correctly
+print("Dataframe loaded successfully:")
+print(df.head())
+
+# Define the columns to check for duplicates
+duplicate_columns = ['Account ID', 'Identifier']
+
+# Identify duplicated rows based on the defined columns
+duplicates = df[df.duplicated(subset=duplicate_columns, keep=False)]
+
+# If duplicates exist, display them
+if not duplicates.empty:
+    print("\nDuplicated Coupon Payments:")
+    print(duplicates)
+else:
+    print("\nNo duplicated coupon payments found.")
+
+# Optionally, you can save the duplicates to a new CSV file
+duplicates.to_csv(fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Output\{filename}_output.csv', index=False)
