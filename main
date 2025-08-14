@@ -1,30 +1,46 @@
 import pandas as pd
+from sql import execute_query
+import pyodbc as py
+import datetime
+import tkinter
+from message import show_popup
+
+use_sql = True
+
+date = '2025-08-01'
 
 
-filename = 'PayPal - Duplicated Coupon Chk (1)'
+if use_sql == True:
+    df = execute_query(date)[0]
+    print(df)
 
+else:
+    filename = 'PayPal - Duplicated Coupon Chk (3)'
+    file_path = fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Insert\{filename}.csv'  # Update this with the path to your CSV file
+    df = pd.read_csv(file_path)
 
-
-# Load the CSV file into a DataFrame
-file_path = fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Insert\{filename}.csv'  # Update this with the path to your CSV file
-df = pd.read_csv(file_path)
 
 # Display the DataFrame to ensure it's loaded correctly
 print("Dataframe loaded successfully:")
 print(df.head())
 
 # Define the columns to check for duplicates
-duplicate_columns = ['Account ID', 'Identifier']
+if use_sql == True:
+   duplicate_columns = ['AccountID', 'cusip']
+else:
+    duplicate_columns = ['Account ID', 'Identifier'] 
+
 
 # Identify duplicated rows based on the defined columns
 duplicates = df[df.duplicated(subset=duplicate_columns, keep=False)]
 
+output_filename = f'duplicated_coupon_check{date}'
+
 # If duplicates exist, display them
 if not duplicates.empty:
-    print("\nDuplicated Coupon Payments:")
-    print(duplicates)
-else:
-    print("\nNo duplicated coupon payments found.")
+    show_popup("There are Duplicated Coupon Payments")
+    duplicates.to_csv(fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Output\{output_filename}.csv', index=False)
 
-# Optionally, you can save the duplicates to a new CSV file
-duplicates.to_csv(fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Output\{filename}_output.csv', index=False)
+else:
+    show_popup("There are no Duplicated Coupon Payments")
+
