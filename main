@@ -34,7 +34,7 @@ else:
 # Identify duplicated rows based on the defined columns
 duplicates = df[df.duplicated(subset=duplicate_columns, keep=False)]
 
-output_filename = f'duplicated_coupon_check{date}'
+output_filename = f'duplicated_coupon_check_{date}'
 
 # If duplicates exist, display them
 if not duplicates.empty:
