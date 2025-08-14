@@ -12,7 +12,7 @@ date = '2025-08-01'
 
 if use_sql == True:
     df = execute_query(date)[0]
-    print(df)
+
 
 else:
     filename = 'PayPal - Duplicated Coupon Chk (3)'
@@ -22,7 +22,7 @@ else:
 
 # Display the DataFrame to ensure it's loaded correctly
 print("Dataframe loaded successfully:")
-print(df.head())
+
 
 # Define the columns to check for duplicates
 if use_sql == True:
