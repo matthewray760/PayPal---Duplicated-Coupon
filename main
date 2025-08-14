@@ -3,11 +3,12 @@ from sql import execute_query
 import pyodbc as py
 import datetime
 import tkinter
-from message import show_popup
+from message import show_popup,get_input
 
 use_sql = True
 
-date = '2025-08-01'
+date = get_input("Please enter the begin date: ")
+print(date)
 
 
 if use_sql == True:
@@ -38,7 +39,7 @@ output_filename = f'duplicated_coupon_check_{date}'
 
 # If duplicates exist, display them
 if not duplicates.empty:
-    show_popup("There are Duplicated Coupon Payments")
+    show_popup("There are Duplicated Coupon Payments - please see the output file")
     duplicates.to_csv(fr'C:\Users\matthewray\OneDrive - Clearwater\Desktop\Python\PayPal - Duplicated Coupon\Output\{output_filename}.csv', index=False)
 
 else:
