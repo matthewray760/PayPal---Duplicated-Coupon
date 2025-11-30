@@ -4,7 +4,7 @@ import datetime
 import tkinter as tk
 
 
-def execute_query(date):
+def execute_duplicated_cpns(date):
         # Set up the database connection parameters
         server = 'PROD-SQL-RO'
         database = 'LM'
@@ -39,6 +39,58 @@ def execute_query(date):
 
 
         order by t.EntryDate DESC
+        '''
+
+        cursor.execute(query)
+
+        # Fetch all the rows from the query result
+        cursor.fetchall()
+        df = pd.read_sql(query,conn)
+
+        # Close the cursor and the connection
+        cursor.close()
+        conn.close()
+  
+
+        return df, print("SQL executed within the timeout period")
+
+
+
+
+
+def execute_uncleared_cpns(begin_date,recon_date):
+        # Set up the database connection parameters
+        server = 'PROD-SQL-RO'
+        database = 'LM'
+        username = 'ARBFUND\matthewray'
+        password = 'Uhglbk547895207!!'
+        driver = '{ODBC Driver 17 for SQL Server}'
+        
+
+        # Create the connection string
+        conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};Trusted_Connection=yes;TrustServerCertificate=yes;MultiSubnetFailover=yes'
+
+        # Connect to the database
+        conn = py.connect(conn_str)
+
+        # Create a cursor object to execute the SQL statements
+        cursor = conn.cursor()
+
+        cursor.execute('SET QUERY_GOVERNOR_COST_LIMIT 300')
+
+        # Execute a SQL query
+        query = f'''
+        SELECT  t.tscreated, SM.cusip, t.username, t.tsCreated, t.tsCleared, t.origTransactionid, t.transactionID, t.AccountID, t.EntryDate,t.SettleDate,t.PostDate,t.TransactionTypeAbbreviation, t.Proceeds, t.CashEntryAmount 
+        FROM transactioninfo t
+        JOIN securitymaster sm ON t.securityid = sm.ID
+        WHERE 1=1
+            and AccountID IN ('352906','352907','352913','352918','352914','352902','352909','352919')
+            and t.postDate between '{begin_date}' and '{recon_date}'
+            and transactiontypeabbreviation = 'CPN'
+            and isactive = 1
+            and t.tsCleared is null
+
+        ORDER BY EntryDate DESC
         '''
 
         cursor.execute(query)
